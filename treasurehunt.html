@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vânătoarea de Comori</title>
+    <style>
+        :root {
+            --primary-color: #ff6347; /* Portocaliu-Rosu */
+            --secondary-color: #4CAF50; /* Verde */
+            --background-color: #f0f8ff; /* Albastru deschis */
+            --container-bg: #ffffff;
+            --locked-color: #d0d0d0;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: var(--background-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--container-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        #start-screen h1 {
+            color: var(--primary-color);
+            font-size: 2.8em;
+        }
+        #start-screen p {
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+        #start-screen ul {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+            display: inline-block;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+        #start-screen ul li {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+        #start-button {
+            background-color: var(--primary-color);
+            font-size: 1.5em;
+            padding: 15px 40px;
+        }
+        #start-button:hover {
+            background-color: #e55337;
+        }
+
+        #game-screen {
+            display: none;
+            flex-direction: row;
+            padding: 0;
+            max-width: 1000px;
+            min-height: 600px;
+            overflow: hidden;
+            text-align: left;
+        }
+
+        .sidebar {
+            background-color: #f4f4f4;
+            padding: 20px;
+            width: 250px;
+            border-right: 2px solid #e0e0e0;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        .istoric-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: default;
+            transition: all 0.3s ease;
+        }
+
+        .istoric-item.blocat {
+            background-color: #e9e9e9;
+            color: var(--locked-color);
+        }
+
+        .istoric-item.deblocat {
+            background-color: #e8f5e9;
+            color: #388e3c;
+        }
+
+        .istoric-item.activ {
+            background-color: var(--secondary-color);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 40px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .main-content h1 {
+            color: var(--primary-color);
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .main-content h3 {
+            font-size: 1.5em;
+            color: var(--text-color);
+            margin-top: 0;
+        }
+
+        #indiciu-digital {
+            font-size: 1.2em;
+            line-height: 1.6;
+            min-height: 100px;
+            white-space: pre-wrap;
+            background: #f9f9f9;
+            border: 1px dashed #ccc;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-top: 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1em;
+        }
+
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+        button:hover { background-color: #45a049; }
+
+        #mesaj-feedback {
+            margin-top: 15px;
+            font-weight: bold;
+            min-height: 25px;
+            font-size: 1.2em;
+        }
+        .corect { color: green; }
+        .incorect { color: red; }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px; }
+            #start-screen h1 { font-size: 2em; }
+            
+            #game-screen {
+                flex-direction: column;
+                width: 100%;
+                min-height: 100vh;
+                border-radius: 0;
+            }
+            .sidebar {
+                width: 100%;
+                box-sizing: border-box;
+                border-right: none;
+                border-bottom: 2px solid #e0e0e0;
+            }
+            .main-content { padding: 20px; }
+            .main-content h1 { font-size: 2em; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="start-screen" class="container">
+        <h1>Marea Vânătoare de Comori!</h1>
+        <p>Bun venit, Detectivi Antonia și Rareș! Sunteți pregătiți pentru cea mai mare aventură din casa voastră? O misiune secretă și o surpriză uriașă vă așteaptă!</p>
+        
+        <h3>📜 Regulile Misiunii 📜</h3>
+        <ul>
+            <li>🏠 În diferite locuri din casă sunt ascunse bilete cu ghicitori.</li>
+            <li>🤫 Fiecare bilet vă va oferi o parolă secretă.</li>
+            <li>💻 Introduceți parola aici pentru a debloca locația următorului indiciu.</li>
+            <li>🏆 Rezolvați toate misterele pentru a ajunge la... <strong>Comoara Pierdută!</strong></li>
+        </ul>
+        
+        <button id="start-button">Începeți Misiunea!</button>
+    </div>
+
+    <div id="game-screen" class="container">
+        <div class="sidebar" id="istoric-container"></div>
+        <div class="main-content">
+            <h1 id="titlu-pas"></h1>
+            <h3>Găsiți biletul folosind indiciul de mai jos:</h3>
+            <p id="indiciu-digital"></p>
+            
+            <input type="text" id="parola-input" placeholder="Scrie aici parola de pe bilet...">
+            <button onclick="verificaParola()">Verifică Parola</button>
+            
+            <div id="mesaj-feedback"></div>
+        </div>
+    </div>
+
+    <script>
+    // --- EDITEAZA AICI PENTRU A PERSONALIZA JOCUL ---
+    const indicii = [
+        {
+            titlu: "Pasul 1: Operațiunea Apa Albastră",
+            indiciuDigital: "Misiunea începe afară, unde vara vă răcoriți. Căutați primul bilet lângă sub capacul cel gri.",
+            parola: "labrador"
+        },
+        {
+            titlu: "Pasul 2: Agentul Blănos",
+            indiciuDigital: "Corect! Acum, mergeți la sursa de energie a agentului nostru pufos. Următorul bilet este ascuns chiar la \"restaurantul\" lui.",
+            parola: "volvo" // !!! PERSONALIZEAZA CULOAREA MASINII
+        },
+        {
+            titlu: "Pasul 3: Operațiunea Gerul",
+            indiciuDigital: "Perfect! Acum mergeți la aparatul care păstrează lucrurile reci, dar care nu e în bucătărie. E paznicul băuturilor de afară.",
+            parola: "2017" // !!! PERSONALIZEAZA CLASA LUI RARES
+        },
+        {
+            titlu: "Pasul 4: Adăpostul Cailor Putere",
+            indiciuDigital: "Minunat! Acum mergeți în locul unde 'caii putere' ai familiei se odihnesc. Biletul e ascuns in spatele golului",
+            parola: "viena"
+        },
+        {
+            titlu: "Pasul 5: Misiune la Cald",
+            indiciuDigital: "Memorie de elefant! Acum, intrați în casă, în inima ei, unde se prepară bunătățile. Indiciul se coace la foc mic.",
+            parola: "30"
+        },
+        {
+            titlu: "Pasul 6: Operațiunea 'Fără Umezeală'",
+            indiciuDigital: "Genial! Acum mergeți la mașinăria care învârte hainele și le face calde și pufoase. Căutați biletul în interior.",
+            parola: "58h"
+        },
+        {
+            titlu: "Pasul 7: Secretul din Sertar",
+            indiciuDigital: "Adresa corectă! Acum, mergeți în locul de studiu al lui Rareș. Secretul e păstrat în primul sertar de la biroul lui.",
+            parola: "noiembrie" // !!! PERSONALIZEAZA LUNA ZILEI DE NASTERE A MAMEI
+        },
+        {
+            titlu: "Pasul 8: Secretul Ecranului",
+            indiciuDigital: "Știți totul despre mami! Următorul mister e digital. Îl veți găsi pe \"unealta\" de lucru a mamei, așezat pe butoanele negre.",
+            parola: "adlmt", // Literele sortate. Va accepta orice combinatie de t,d,m,a,l
+            tipParola: "neordonat"
+        },
+        {
+            titlu: "Pasul 9: Proba Curățeniei",
+            indiciuDigital: "Ați onorat familia! Acum mergeți în baia voastră, locul unde vă spălați pe dinți. Indiciul este la vedere, printre periuțe.",
+            parola: "1"
+        },
+        {
+            titlu: "Pasul 10: Codul Final",
+            indiciuDigital: "Sunteți niște mici matematicieni! Acum, mergeți în baia părinților. Ultimul bilet înainte de comoară se ascunde în dulapul cu medicamente.",
+            parola: "craciun"
+        },
+        {
+            titlu: "DESTINAȚIA FINALĂ!",
+            indiciuDigital: "AȚI REUȘIT! Ați rezolvat toate cele 10 mistere! Mergeți în camera de odihnă a părinților. Comoara este ascunsă în obiectul mare pe care îl luăm cu noi când plecăm departe, în vacanță.",
+            parola: "" // Nu mai e nevoie de parola aici
+        }
+    ];
+    // --- NU MODIFICA NIMIC MAI JOS ---
+
+    const startScreen = document.getElementById('start-screen');
+    const gameScreen = document.getElementById('game-screen');
+    const startButton = document.getElementById('start-button');
+    
+    let indiciuCurentIndex = 0;
+    const istoricContainer = document.getElementById('istoric-container');
+    const titluElement = document.getElementById('titlu-pas');
+    const indiciuDigitalElement = document.getElementById('indiciu-digital');
+    const inputElement = document.getElementById('parola-input');
+    const feedbackElement = document.getElementById('mesaj-feedback');
+    const butonElement = document.querySelector('.main-content button');
+    const subtitluElement = document.querySelector('.main-content h3');
+
+    startButton.addEventListener('click', () => {
+        startScreen.style.display = 'none';
+        gameScreen.style.display = 'flex';
+        initializareJoc();
+    });
+
+    function initializareJoc() {
+        istoricContainer.innerHTML = '<h2>Progres Detectivi</h2>';
+        indicii.slice(0, -1).forEach(() => {
+            const item = document.createElement('div');
+            item.classList.add('istoric-item');
+            istoricContainer.appendChild(item);
+        });
+        actualizeazaUI();
+    }
+
+    function actualizeazaUI() {
+        const indiciuCurent = indicii[indiciuCurentIndex];
+        titluElement.textContent = indiciuCurent.titlu;
+        indiciuDigitalElement.textContent = indiciuCurent.indiciuDigital;
+        
+        if (indiciuCurentIndex >= indicii.length - 1) { // Daca e ultimul pas (mesajul final)
+            inputElement.style.display = 'none';
+            butonElement.style.display = 'none';
+            subtitluElement.style.display = 'none';
+            indiciuDigitalElement.style.border = '2px solid var(--secondary-color)';
+            indiciuDigitalElement.style.fontWeight = 'bold';
+        }
+
+        const itemeIstoric = document.querySelectorAll('.istoric-item');
+        itemeIstoric.forEach((item, index) => {
+            item.classList.remove('activ', 'deblocat', 'blocat');
+            if (index < indiciuCurentIndex) {
+                item.classList.add('deblocat');
+                item.textContent = indicii[index].titlu;
+            } else if (index === indiciuCurentIndex) {
+                item.classList.add('activ');
+                item.textContent = indicii[index].titlu;
+            } else {
+                item.classList.add('blocat');
+                item.textContent = `Pasul ${index + 1}: Blocat 🔒`;
+            }
+        });
+    }
+
+    function verificaParola() {
+        if (indiciuCurentIndex >= indicii.length - 1) return;
+
+        const indiciuCurent = indicii[indiciuCurentIndex];
+        let parolaIntrodusa = inputElement.value.trim().toLowerCase();
+        const parolaCorecta = indiciuCurent.parola.toLowerCase();
+        let esteCorect = false;
+
+        if (indiciuCurent.tipParola === 'neordonat') {
+            const sortedInput = parolaIntrodusa.split('').sort().join('');
+            if (sortedInput === parolaCorecta) {
+                esteCorect = true;
+            }
+        } else {
+            if (parolaIntrodusa === parolaCorecta) {
+                esteCorect = true;
+            }
+        }
+
+        if (esteCorect) {
+            feedbackElement.textContent = "CORECT! 🎉 Ați deblocat următorul pas!";
+            feedbackElement.className = 'corect';
+            indiciuCurentIndex++;
+
+            setTimeout(() => {
+                actualizeazaUI();
+                inputElement.value = '';
+                feedbackElement.textContent = '';
+            }, 3000);
+        } else {
+            feedbackElement.textContent = "Incorect! Mai încearcă! 🤔";
+            feedbackElement.className = 'incorect';
+            inputElement.style.animation = 'shake 0.5s';
+            setTimeout(() => inputElement.style.animation = '', 500);
+        }
+    }
+    
+    const style = document.createElement('style');
+    style.innerHTML = `@keyframes shake {
+      10%, 90% { transform: translate3d(-1px, 0, 0); }
+      20%, 80% { transform: translate3d(2px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+      40%, 60% { transform: translate3d(4px, 0, 0); }
+    }`;
+    document.head.appendChild(style);
+
+    </script>
+</body>
+</html>
