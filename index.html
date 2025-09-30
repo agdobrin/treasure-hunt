@@ -3,398 +3,238 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vânătoarea de Comori</title>
+    <title>Dashboard Automatizare (Prototip Final)</title>
     <style>
         :root {
-            --primary-color: #ff6347; /* Portocaliu-Rosu */
-            --secondary-color: #4CAF50; /* Verde */
-            --background-color: #f0f8ff; /* Albastru deschis */
-            --container-bg: #ffffff;
-            --locked-color: #d0d0d0;
-            --text-color: #333;
+            --bg-color: #f8f9fa;
+            --card-bg-color: #ffffff;
+            --text-color: #212529;
+            --text-secondary-color: #6c757d;
+            --border-color: #dee2e6;
+            --green: #28a745;
+            --yellow: #ffc107;
+            --red: #dc3545;
+            --green-bg: #e2f5e7;
+            --yellow-bg: #fff8e1;
+            --red-bg: #fbe9eb;
         }
-
         body {
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            background-color: var(--background-color);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 800px;
-            background: var(--container-bg);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-
-        #start-screen h1 {
-            color: var(--primary-color);
-            font-size: 2.8em;
-        }
-        #start-screen p {
-            font-size: 1.2em;
-            line-height: 1.6;
-        }
-        #start-screen ul {
-            list-style: none;
-            padding: 0;
-            text-align: left;
-            display: inline-block;
-            margin-top: 20px;
-            margin-bottom: 30px;
-        }
-        #start-screen ul li {
-            font-size: 1.1em;
-            margin-bottom: 15px;
-        }
-        #start-button {
-            background-color: var(--primary-color);
-            font-size: 1.5em;
-            padding: 15px 40px;
-        }
-        #start-button:hover {
-            background-color: #e55337;
-        }
-
-        #game-screen {
-            display: none;
-            flex-direction: row;
-            padding: 0;
-            max-width: 1000px;
-            min-height: 600px;
-            overflow: hidden;
-            text-align: left;
-        }
-
-        .sidebar {
-            background-color: #f4f4f4;
-            padding: 20px;
-            width: 250px;
-            border-right: 2px solid #e0e0e0;
-        }
-
-        .sidebar h2 {
-            text-align: center;
-            color: var(--primary-color);
-            margin-top: 0;
-        }
-
-        .istoric-item {
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: default;
-            transition: all 0.3s ease;
-        }
-
-        .istoric-item.blocat {
-            background-color: #e9e9e9;
-            color: var(--locked-color);
-        }
-
-        .istoric-item.deblocat {
-            background-color: #e8f5e9;
-            color: #388e3c;
-        }
-
-        .istoric-item.activ {
-            background-color: var(--secondary-color);
-            color: white;
-            transform: scale(1.05);
-        }
-
-        .main-content {
-            flex-grow: 1;
-            padding: 40px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .main-content h1 {
-            color: var(--primary-color);
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-        
-        .main-content h3 {
-            font-size: 1.5em;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+            background-color: var(--bg-color);
             color: var(--text-color);
-            margin-top: 0;
+            margin: 0;
+            padding: 24px;
         }
-
-        #indiciu-digital {
-            font-size: 1.2em;
-            line-height: 1.6;
-            min-height: 100px;
-            white-space: pre-wrap;
-            background: #f9f9f9;
-            border: 1px dashed #ccc;
-            padding: 15px;
-            border-radius: 10px;
-        }
-
-        input[type="text"] {
-            width: calc(100% - 22px);
-            padding: 10px;
-            margin-top: 20px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 1em;
-        }
-
-        button {
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1.1em;
-            margin-top: 15px;
-            transition: background-color 0.3s;
-        }
-        button:hover { background-color: #45a049; }
-
-        #mesaj-feedback {
-            margin-top: 15px;
-            font-weight: bold;
-            min-height: 25px;
-            font-size: 1.2em;
-        }
-        .corect { color: green; }
-        .incorect { color: red; }
-
-        @media (max-width: 768px) {
-            .container { padding: 20px; }
-            #start-screen h1 { font-size: 2em; }
-            
-            #game-screen {
-                flex-direction: column;
-                width: 100%;
-                min-height: 100vh;
-                border-radius: 0;
-            }
-            .sidebar {
-                width: 100%;
-                box-sizing: border-box;
-                border-right: none;
-                border-bottom: 2px solid #e0e0e0;
-            }
-            .main-content { padding: 20px; }
-            .main-content h1 { font-size: 2em; }
-        }
-
+        .dashboard-container { max-width: 1200px; margin: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .header h1 { font-size: 24px; font-weight: 600; margin: 0; }
+        .filters { display: flex; gap: 16px; }
+        .filter-group label { font-size: 14px; color: var(--text-secondary-color); margin-right: 8px; }
+        .filter-group select { padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--card-bg-color); font-size: 14px; }
+        .kpi-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 24px; }
+        .kpi-card { background: var(--card-bg-color); border-radius: 8px; padding: 20px; border: 1px solid var(--border-color); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .kpi-card .title { font-size: 14px; font-weight: 600; color: var(--text-secondary-color); margin: 0 0 8px 0; }
+        .kpi-card .value { font-size: 32px; font-weight: 700; margin: 0 0 4px 0; }
+        .kpi-card .value.positive { color: var(--green); }
+        .kpi-card .description { font-size: 12px; color: var(--text-secondary-color); margin: 0; }
+        .main-table { background: var(--card-bg-color); border-radius: 8px; border: 1px solid var(--border-color); width: 100%; border-collapse: collapse; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .main-table th, .main-table td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        .main-table th { font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--text-secondary-color); background-color: #f8f9fa; }
+        .main-table tr:last-child td { border-bottom: none; }
+        .status-badge { padding: 4px 10px; border-radius: 12px; font-weight: 600; font-size: 12px; }
+        .status-green { background-color: var(--green-bg); color: var(--green); }
+        .status-yellow { background-color: var(--yellow-bg); color: #b08900; }
+        .status-red { background-color: var(--red-bg); color: var(--red); }
+        .run-status-icon { font-size: 18px; vertical-align: middle; }
+        .expandable > td:first-child { cursor: pointer; }
+        .project-name { font-weight: 600; }
+        .repo-name { padding-left: 24px; }
+        .tech-name { padding-left: 48px; color: var(--text-secondary-color); }
+        .expand-icon { display: inline-block; width: 16px; font-family: monospace; }
+        .growth { font-weight: 600; }
+        .growth.positive { color: var(--green); }
+        .growth.negative { color: var(--red); }
     </style>
 </head>
 <body>
 
-    <div id="start-screen" class="container">
-        <h1>Marea Vânătoare de Comori!</h1>
-        <p>Bun venit, Detectivi Antonia și Rareș! Sunteți pregătiți pentru cea mai mare aventură din casa voastră? O misiune secretă și o surpriză uriașă vă așteaptă!</p>
-        
-        <h3>📜 Regulile Misiunii 📜</h3>
-        <ul>
-            <li>🏠 În diferite locuri din casă sunt ascunse bilete cu ghicitori.</li>
-            <li>🤫 Fiecare bilet vă va oferi o parolă secretă.</li>
-            <li>💻 Introduceți parola aici pentru a debloca locația următorului indiciu.</li>
-            <li>🏆 Rezolvați toate misterele pentru a ajunge la... <strong>Comoara Pierdută!</strong></li>
-        </ul>
-        
-        <button id="start-button">Începeți Misiunea!</button>
-    </div>
+    <div class="dashboard-container">
+        <header class="header">
+            <h1>Dashboard Overview</h1>
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="period-filter">Perioadă:</label>
+                    <select id="period-filter">
+                        <option value="30" selected>Ultimele 30 zile</option>
+                        <option value="14">Ultimele 14 zile</option>
+                        <option value="7">Ultimele 7 zile</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="tech-filter">Tehnologie:</label>
+                    <select id="tech-filter">
+                        <option value="all">Toate</option>
+                        <option value="appium">Appium</option>
+                        <option value="phpunit">PHPUnit</option>
+                        <option value="testcafe">TestCafe</option>
+                        <option value="pactumjs">PactumJS</option>
+                    </select>
+                </div>
+            </div>
+        </header>
 
-    <div id="game-screen" class="container">
-        <div class="sidebar" id="istoric-container"></div>
-        <div class="main-content">
-            <h1 id="titlu-pas"></h1>
-            <h3>Găsiți biletul folosind indiciul de mai jos:</h3>
-            <p id="indiciu-digital"></p>
-            
-            <input type="text" id="parola-input" placeholder="Scrie aici parola de pe bilet...">
-            <button onclick="verificaParola()">Verifică Parola</button>
-            
-            <div id="mesaj-feedback"></div>
+        <div class="kpi-bar">
+            <div class="kpi-card"> <p class="title">🎯 Stabilitate Globală</p> <p class="value" id="kpi-stability">0%</p> <p class="description">Rulări verzi (medie)</p> </div>
+            <div class="kpi-card"> <p class="title">📈 Acoperire Totală</p> <p class="value" id="kpi-total-tests">0</p> <p class="description">Teste automate</p> </div>
+            <div class="kpi-card"> <p class="title">➕ Creștere Netă (30z)</p> <p class="value" id="kpi-growth">0</p> <p class="description">Teste noi/șterse</p> </div>
+            <div class="kpi-card"> <p class="title">✅ Proiecte Conforme</p> <p class="value" id="kpi-compliant">0 din 0</p> <p class="description">Standard >90%</p> </div>
         </div>
+
+        <table class="main-table">
+            <thead>
+                <tr>
+                    <th>Proiect / Repository / Tehnologie</th>
+                    <th>Stabilitate (14z)</th>
+                    <th>Ultima Rulare</th>
+                    <th>Total Teste</th>
+                    <th>Creștere (30z)</th>
+                </tr>
+            </thead>
+            <tbody id="dashboard-table-body"></tbody>
+        </table>
     </div>
 
-    <script>
-    // --- EDITEAZA AICI PENTRU A PERSONALIZA JOCUL ---
-    const indicii = [
-        {
-            titlu: "Pasul 1: Operațiunea Apa Albastră",
-            indiciuDigital: "Misiunea începe afară, unde vara vă răcoriți. Căutați primul bilet sub capacul cel gri.",
-            parola: "labrador"
-        },
-        {
-            titlu: "Pasul 2: Agentul Blănos",
-            indiciuDigital: "Corect! Acum, pentru ca mai avem un alt agent alb pufos, mergeți la sursa lui de liniste. Următorul bilet este ascuns chiar in \"cutia\" lui gri.",
-            parola: "volvo" // !!! PERSONALIZEAZA CULOAREA MASINII
-        },
-        {
-            titlu: "Pasul 3: Operațiunea Gerul",
-            indiciuDigital: "Perfect! Acum mergeți la aparatul care păstrează lucrurile reci, dar care nu e în bucătărie. E paznicul băuturilor de afară.",
-            parola: "2017" // !!! PERSONALIZEAZA CLASA LUI RARES
-        },
-        {
-            titlu: "Pasul 4: Adăpostul Cailor Putere",
-            indiciuDigital: "Minunat! Mergi in locul unde stau cuminți, uneori prăfuite, lucruri ce tund iarba, sau strâng șuruburi grăbite. Biletul e atarnat la vedere.",
-            parola: "viena"
-        },
-        {
-            titlu: "Pasul 5: Misiune la Cald",
-            indiciuDigital: "Memorie de elefant! Acum, intrați în casă, în inima ei, unde se prepară bunătățile. Indiciul se coace la foc mic.",
-            parola: "30"
-        },
-        {
-            titlu: "Pasul 6: Operațiunea 'Fără Umezeală'",
-            indiciuDigital: "Genial! Acum mergeți la mașinăria care învârte hainele și le face calde și pufoase. Căutați biletul în interior.",
-            parola: "58h"
-        },
-        {
-            titlu: "Pasul 7: Secretul din Sertar",
-            indiciuDigital: "Adresa corectă! Unde Rareș învață și visează, primul sertar păstrează ce urmează.",
-            parola: "noiembrie" // !!! PERSONALIZEAZA LUNA ZILEI DE NASTERE A MAMEI
-        },
-        {
-            titlu: "Pasul 8: Secretul Ecranului",
-            indiciuDigital: "Știți totul despre mami! Următorul mister e digital. Îl veți găsi pe \"unealta\" de lucru a mamei, așezat pe butoanele negre.",
-            parola: "adlmt", // Literele sortate. Va accepta orice combinatie de t,d,m,a,l
-            tipParola: "neordonat"
-        },
-        {
-            titlu: "Pasul 9: Proba Curățeniei",
-            indiciuDigital: "Ați onorat familia! Acum mergeți în baia voastră. Unde dinții se curăță și periuțele stau, acolo indiciul te așteaptă, chiar la vedere.",
-            parola: "1"
-        },
-        {
-            titlu: "Pasul 10: Codul Final",
-            indiciuDigital: "Sunteți niște mici matematicieni! Acum, mergeți în baia părinților. Biletul ce te duce spre comoară stă ascuns in dulapul cu lucruri ce curăță și șterg.",
-            parola: "craciun"
-        },
-        {
-            titlu: "DESTINAȚIA FINALĂ!",
-            indiciuDigital: "AȚI REUȘIT! Ați rezolvat toate cele 10 mistere! Mergeți în camera cu haine a părinților. Comoara este ascunsă în obiectul mare pe care îl luăm cu noi când plecăm departe, în vacanță.",
-            parola: "" // Nu mai e nevoie de parola aici
-        }
-    ];
-    // --- NU MODIFICA NIMIC MAI JOS ---
-
-    const startScreen = document.getElementById('start-screen');
-    const gameScreen = document.getElementById('game-screen');
-    const startButton = document.getElementById('start-button');
+<script>
+document.addEventListener('DOMContentLoaded', function() {
     
-    let indiciuCurentIndex = 0;
-    const istoricContainer = document.getElementById('istoric-container');
-    const titluElement = document.getElementById('titlu-pas');
-    const indiciuDigitalElement = document.getElementById('indiciu-digital');
-    const inputElement = document.getElementById('parola-input');
-    const feedbackElement = document.getElementById('mesaj-feedback');
-    const butonElement = document.querySelector('.main-content button');
-    const subtitluElement = document.querySelector('.main-content h3');
+    // Generare date mock cu date calendaristice
+    const today = new Date();
+    const generateRandomDate = (daysAgo) => new Date(today.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+    const mockData = [
+        { project: 'Sameday', repo: 'sameday-courier-app', tech: 'appium', stability: 98, lastRun: 'green', totalTests: 450, growth: 12, date: generateRandomDate(2) },
+        { project: 'Sameday', repo: 'sameday-backend', tech: 'phpunit', stability: 99, lastRun: 'green', totalTests: 2500, growth: 55, date: generateRandomDate(1) },
+        { project: 'Leroy Merlin', repo: 'leroy-merlin-ro', tech: 'testcafe', stability: 91, lastRun: 'green', totalTests: 850, growth: 21, date: generateRandomDate(5) },
+        { project: 'Leroy Merlin', repo: 'wms-api', tech: 'pactumjs', stability: 100, lastRun: 'green', totalTests: 320, growth: 10, date: generateRandomDate(8) },
+        { project: 'Mirro', repo: 'mirro-backend', tech: 'phpunit', stability: 100, lastRun: 'green', totalTests: 400, growth: 8, date: generateRandomDate(12) },
+        { project: 'Mirro', repo: 'mirro-frontend', tech: 'testcafe', stability: 85, lastRun: 'red', totalTests: 250, growth: -5, date: generateRandomDate(3) },
+        { project: 'Regista', repo: 'regista-core', tech: 'phpunit', stability: 98, lastRun: 'green', totalTests: 600, growth: 15, date: generateRandomDate(20) },
+        { project: 'Regista', repo: 'regista-core', tech: 'testcafe', stability: 92, lastRun: 'green', totalTests: 200, growth: 5, date: generateRandomDate(4) },
+        { project: 'eMAG', repo: 'emag-mobile-app', tech: 'appium', stability: 95, lastRun: 'green', totalTests: 1100, growth: 40, date: generateRandomDate(15) },
+        { project: 'eMAG', repo: 'genius-api', tech: 'pactumjs', stability: 99, lastRun: 'green', totalTests: 550, growth: 30, date: generateRandomDate(1) },
+        { project: 'Tazz', repo: 'tazz-frontend', tech: 'testcafe', stability: 93, lastRun: 'green', totalTests: 780, growth: 18, date: generateRandomDate(18) },
+        { project: 'Fashion Days', repo: 'fd-mobile-app', tech: 'appium', stability: 89, lastRun: 'green', totalTests: 620, growth: 3, date: generateRandomDate(25) },
+        { project: 'Fashion Days', repo: 'fd-backend', tech: 'phpunit', stability: 96, lastRun: 'green', totalTests: 1800, growth: 25, date: generateRandomDate(6) },
+        { project: 'Bookster', repo: 'bookster-web', tech: 'testcafe', stability: 100, lastRun: 'green', totalTests: 410, growth: 11, date: generateRandomDate(9) },
+        { project: 'Payvent', repo: 'payvent-api', tech: 'pactumjs', stability: 100, lastRun: 'green', totalTests: 150, growth: 15, date: generateRandomDate(28) },
+        { project: 'iLoan', repo: 'iloan-core', tech: 'phpunit', stability: 94, lastRun: 'green', totalTests: 530, growth: 7, date: generateRandomDate(11) },
+        { project: 'Investimental', repo: 'invest-trader', tech: 'testcafe', stability: 97, lastRun: 'green', totalTests: 330, growth: 22, date: generateRandomDate(2) },
+        { project: 'Glow2Go', repo: 'glow-app', tech: 'appium', stability: 75, lastRun: 'red', totalTests: 280, growth: 1, date: generateRandomDate(16) },
+    ];
 
-    startButton.addEventListener('click', () => {
-        startScreen.style.display = 'none';
-        gameScreen.style.display = 'flex';
-        initializareJoc();
+    const techFilter = document.getElementById('tech-filter');
+    const periodFilter = document.getElementById('period-filter');
+    const tableBody = document.getElementById('dashboard-table-body');
+    
+    let expandedState = {};
+
+    techFilter.addEventListener('change', updateDashboard);
+    periodFilter.addEventListener('change', updateDashboard);
+    tableBody.addEventListener('click', (e) => {
+        const row = e.target.closest('tr');
+        if (row && row.classList.contains('expandable')) {
+            const id = row.dataset.id;
+            expandedState[id] = !expandedState[id];
+            updateDashboard();
+        }
     });
 
-    function initializareJoc() {
-        istoricContainer.innerHTML = '<h2>Progres Detectivi</h2>';
-        indicii.slice(0, -1).forEach(() => {
-            const item = document.createElement('div');
-            item.classList.add('istoric-item');
-            istoricContainer.appendChild(item);
-        });
-        actualizeazaUI();
-    }
+    const getStatusBadge = (s) => s > 90 ? `<span class="status-badge status-green">${s}%</span>` : s >= 60 ? `<span class="status-badge status-yellow">${s}%</span>` : `<span class="status-badge status-red">${s}%</span>`;
+    const getLastRunIcon = (s) => s === 'green' ? '✅' : '❌';
+    const getGrowthHtml = (g) => `<span class="growth ${g >= 0 ? 'positive' : 'negative'}">${g >= 0 ? '+' : ''}${g}</span>`;
+    const getAvg = arr => arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : 0;
 
-    function actualizeazaUI() {
-        const indiciuCurent = indicii[indiciuCurentIndex];
-        titluElement.textContent = indiciuCurent.titlu;
-        indiciuDigitalElement.textContent = indiciuCurent.indiciuDigital;
+    function updateDashboard() {
+        const selectedTech = techFilter.value;
+        const selectedPeriod = parseInt(periodFilter.value, 10);
+        const cutoffDate = new Date(today.getTime() - selectedPeriod * 24 * 60 * 60 * 1000);
+
+        const filteredData = mockData.filter(item => 
+            (selectedTech === 'all' || item.tech === selectedTech) &&
+            (item.date >= cutoffDate)
+        );
+
+        const projects = {};
+        for (const item of filteredData) {
+            if (!projects[item.project]) projects[item.project] = {};
+            if (!projects[item.project][item.repo]) projects[item.project][item.repo] = [];
+            projects[item.project][item.repo].push(item);
+        }
+
+        tableBody.innerHTML = '';
+        for (const projectName in projects) {
+            const repos = projects[projectName];
+            const projectChildren = Object.values(repos).flat();
+            const projectAvg = getAvg(projectChildren.map(i => i.stability));
+            
+            const isProjectExpanded = expandedState[projectName];
+            let projectHtml = `<tr class="expandable" data-id="${projectName}">
+                <td class="project-name"><span class="expand-icon">${isProjectExpanded ? '-' : '+'}</span> ${projectName}</td>
+                <td>${getStatusBadge(projectAvg)}</td>
+                <td class="run-status-icon">${getLastRunIcon(projectChildren.some(i => i.lastRun === 'red') ? 'red' : 'green')}</td>
+                <td>${projectChildren.reduce((s, i) => s + i.totalTests, 0).toLocaleString()}</td>
+                <td>${getGrowthHtml(projectChildren.reduce((s, i) => s + i.growth, 0))}</td></tr>`;
+
+            if (isProjectExpanded) {
+                for (const repoName in repos) {
+                    const techs = repos[repoName];
+                    const repoAvg = getAvg(techs.map(i => i.stability));
+                    const repoId = `${projectName}|${repoName}`;
+                    const isRepoExpanded = expandedState[repoId];
+
+                    projectHtml += `<tr class="expandable" data-id="${repoId}">
+                        <td class="repo-name"><span class="expand-icon">${isRepoExpanded ? '-' : '+'}</span> ${repoName}</td>
+                        <td>${getStatusBadge(repoAvg)}</td>
+                        <td class="run-status-icon">${getLastRunIcon(techs.some(i => i.lastRun === 'red') ? 'red' : 'green')}</td>
+                        <td>${techs.reduce((s, i) => s + i.totalTests, 0).toLocaleString()}</td>
+                        <td>${getGrowthHtml(techs.reduce((s, i) => s + i.growth, 0))}</td></tr>`;
+
+                    if (isRepoExpanded) {
+                        for (const tech of techs) {
+                            projectHtml += `<tr>
+                                <td class="tech-name">${tech.tech}</td>
+                                <td>${getStatusBadge(tech.stability)}</td>
+                                <td class="run-status-icon">${getLastRunIcon(tech.lastRun)}</td>
+                                <td>${tech.totalTests.toLocaleString()}</td>
+                                <td>${getGrowthHtml(tech.growth)}</td></tr>`;
+                        }
+                    }
+                }
+            }
+            tableBody.innerHTML += projectHtml;
+        }
+
+        // KPIs
+        const totalTests = filteredData.reduce((s, i) => s + i.totalTests, 0);
+        const totalGrowth = mockData.filter(i => i.date >= new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000)).reduce((s, i) => s + i.growth, 0);
         
-        if (indiciuCurentIndex >= indicii.length - 1) { // Daca e ultimul pas (mesajul final)
-            inputElement.style.display = 'none';
-            butonElement.style.display = 'none';
-            subtitluElement.style.display = 'none';
-            indiciuDigitalElement.style.border = '2px solid var(--secondary-color)';
-            indiciuDigitalElement.style.fontWeight = 'bold';
+        const projectStabilities = {};
+        for (const item of filteredData) {
+            if (!projectStabilities[item.project]) projectStabilities[item.project] = [];
+            projectStabilities[item.project].push(item.stability);
         }
+        const projectAverages = Object.values(projectStabilities).map(s => getAvg(s));
+        const globalStability = getAvg(projectAverages);
+        const compliantProjects = projectAverages.filter(avg => avg > 90).length;
 
-        const itemeIstoric = document.querySelectorAll('.istoric-item');
-        itemeIstoric.forEach((item, index) => {
-            item.classList.remove('activ', 'deblocat', 'blocat');
-            if (index < indiciuCurentIndex) {
-                item.classList.add('deblocat');
-                item.textContent = indicii[index].titlu;
-            } else if (index === indiciuCurentIndex) {
-                item.classList.add('activ');
-                item.textContent = indicii[index].titlu;
-            } else {
-                item.classList.add('blocat');
-                item.textContent = `Pasul ${index + 1}: Blocat 🔒`;
-            }
-        });
+        document.getElementById('kpi-stability').textContent = `${globalStability}%`;
+        document.getElementById('kpi-total-tests').textContent = totalTests.toLocaleString();
+        document.getElementById('kpi-growth').innerHTML = getGrowthHtml(totalGrowth);
+        document.getElementById('kpi-compliant').textContent = `${compliantProjects} din ${projectAverages.length}`;
     }
 
-    function verificaParola() {
-        if (indiciuCurentIndex >= indicii.length - 1) return;
+    updateDashboard();
+});
+</script>
 
-        const indiciuCurent = indicii[indiciuCurentIndex];
-        let parolaIntrodusa = inputElement.value.trim().toLowerCase();
-        const parolaCorecta = indiciuCurent.parola.toLowerCase();
-        let esteCorect = false;
-
-        if (indiciuCurent.tipParola === 'neordonat') {
-            const sortedInput = parolaIntrodusa.split('').sort().join('');
-            if (sortedInput === parolaCorecta) {
-                esteCorect = true;
-            }
-        } else {
-            if (parolaIntrodusa === parolaCorecta) {
-                esteCorect = true;
-            }
-        }
-
-        if (esteCorect) {
-            feedbackElement.textContent = "CORECT! 🎉 Ați deblocat următorul pas!";
-            feedbackElement.className = 'corect';
-            indiciuCurentIndex++;
-
-            setTimeout(() => {
-                actualizeazaUI();
-                inputElement.value = '';
-                feedbackElement.textContent = '';
-            }, 3000);
-        } else {
-            feedbackElement.textContent = "Incorect! Mai încearcă! 🤔";
-            feedbackElement.className = 'incorect';
-            inputElement.style.animation = 'shake 0.5s';
-            setTimeout(() => inputElement.style.animation = '', 500);
-        }
-    }
-    
-    const style = document.createElement('style');
-    style.innerHTML = `@keyframes shake {
-      10%, 90% { transform: translate3d(-1px, 0, 0); }
-      20%, 80% { transform: translate3d(2px, 0, 0); }
-      30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-      40%, 60% { transform: translate3d(4px, 0, 0); }
-    }`;
-    document.head.appendChild(style);
-
-    </script>
 </body>
 </html>
